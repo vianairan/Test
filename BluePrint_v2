@@ -1,0 +1,189 @@
+// ---- User ----//
+CREATE (user:USER {label:"User", always_active:true})
+CREATE (full_name:FULL_NAME {label:"Full Name"})
+CREATE (age:AGE {label:"Age"})
+CREATE (home:HOME {label:"Home"})
+CREATE (work:WORK {label:"Work"})
+CREATE (home_address:ADDRESS {label:"Address"})
+CREATE (work_address:ADDRESS {label:"Address"})
+CREATE (home_city:CITY {label:"City Home"})
+CREATE (work_city:CITY {label:"City Work"})
+CREATE
+  (user)-[:NAME_OF]->(full_name),
+  (user)-[:AGE_OF]->(age),
+  (user)-[:LIVES_IN]->(home),
+  (user)-[:WORKS_AT]->(work),
+  (home)-[:ADDRESS_OF]->(home_address),
+  (work)-[:ADDRESS_OF]->(work_address),
+  (home)-[:LOCATED_IN]->(home_city),
+  (work)-[:LOCATED_IN]->(work_city)
+
+// ---- Flight Status ----//
+CREATE (skill_flight_status:FLIGHT_STATUS {label:"Flight Status"})
+CREATE (segment:FLIGHT_SEGMENT {label:"Segment"})
+CREATE (flight_number:FLIGHT_NUMBER {label:"Flight Number"})
+CREATE (departure:HUB {label:"Departure", travel_type:"air_travel"})
+CREATE (arrival:HUB {label:"Arrival", travel_type:"air_travel"})
+CREATE (arrival_city:CITY {label:"Arrival City"})
+CREATE (departure_city:CITY {label:"Depart City"})
+CREATE (arrival_date:DATE {label:"Arrival Date"})
+CREATE (departure_date:DATE {label:"Depart Date"})
+CREATE (arrival_time:TIME {label:"Arrival Time"})
+CREATE (departure_time:TIME {label:"Depart Time"})
+CREATE (arrival_airport:AIRPORT {label:"Arrival Airport"})
+CREATE (departure_airport:AIRPORT {label:"Depart Airport"})
+CREATE (departure_airport_code:AIRPORT_CODE {label:"Depart Airport Code"})
+CREATE (arrival_airport_code:AIRPORT_CODE {label:"Arrival Airport Code"})
+CREATE
+  (user)-[:SKILL_GET_FLIGHT_STATUS]->(skill_flight_status),
+  (skill_flight_status)-[:CONNECTS{can_have_many:true}]->(segment),
+  (segment)-[:SKILL_GET_FLIGHT_NUMBER]->(flight_number),
+  (segment)-[:SKILL_GET_DEPARTURE_INFO]->(departure),
+  (departure)-[:CONNECTS]->(departure_city),
+  (departure)-[:SKILL_GET_DEPARTURE_DATE]->(departure_date),
+  (departure)-[:SKILL_GET_DEPARTURE_TIME]->(departure_time),
+  (departure)-[:CONNECTS]->(departure_airport),
+  (departure_airport)-[:CONNECTS]->(departure_airport_code),
+  (segment)-[:SKILL_GET_ARRIVAL_INFO]->(arrival),
+  (arrival)-[:CONNECTS]->(arrival_city),
+  (arrival)-[:SKILL_GET_ARRIVAL_DATE]->(arrival_date),
+  (arrival)-[:SKILL_GET_ARRIVAL_TIME]->(arrival_time),
+  (arrival)-[:CONNECTS]->(arrival_airport),
+  (arrival_airport)-[:CONNECTS]->(arrival_airport_code)
+
+// ---- Flight Search ----//
+CREATE (skill_flight_search:FLIGHT_SEARCH {label:"Flight Search"})
+CREATE (flight_search_origin:HUB {label:"Origin", travel_type:"air_travel"})
+CREATE (flight_search_destination:HUB {label:"Destination", travel_type:"air_travel"})
+CREATE (flight_search_origin_city:CITY {label:"Origin City"})
+CREATE (flight_search_destination_city:CITY {label:"Destination City"})
+CREATE (flight_search_departure_date:DATE {label:"Depart Date"})
+CREATE (flight_search_arrival_date:DATE {label:"Arrival Date"})
+CREATE (flight_search_departure_time:TIME {label:"Depart Time"})
+CREATE (flight_search_arrival_time:TIME {label:"Arrival Time"})
+CREATE (flight_search_departure_airport:AIRPORT {label:"Depart Airport"})
+CREATE (flight_search_arrival_airport:AIRPORT {label:"Arrival Airport"})
+CREATE (flight_search_departure_airport_code:AIRPORT_CODE {label:"Depart Airport Code"})
+CREATE (flight_search_arrival_airport_code:AIRPORT_CODE {label:"Arrival Airport Code"})
+CREATE (flight_search_price:PRICE {label:"Price"})
+CREATE (flight_search_is_round_trip:IS_ROUND_TRIP {label:"Round Trip?"})
+CREATE (flight_search_one_way:ONE_WAY {label:"One Way"})
+CREATE (flight_search_round_trip:ROUND_TRIP {label:"Round Trip"})
+CREATE
+  (user)-[:SKILL_GET_FLIGHT_SEARCH]->(skill_flight_search),
+  (skill_flight_search)-[:CONNECTS]->(flight_search_origin),
+  (skill_flight_search)-[:CONNECTS]->(flight_search_destination),
+  (skill_flight_search)-[:CONNECTS {can_have_many:true}]->(segment),
+  (skill_flight_search)-[:SKILL_GET_PRICE]->(flight_search_price),
+  (skill_flight_search)-[:CONNECTS]->(flight_search_is_round_trip),
+  (flight_search_is_round_trip)-[:SKILL_YES]->(flight_search_round_trip),
+  (flight_search_is_round_trip)-[:SKILL_NO]->(flight_search_one_way),
+  (flight_search_origin)-[:CONNECTS]->(flight_search_origin_city),
+  (flight_search_origin)-[:SKILL_GET_DEPARTURE_DATE]->(flight_search_departure_date),
+  (flight_search_origin)-[:SKILL_GET_DEPARTURE_TIME]->(flight_search_departure_time),
+  (flight_search_origin)-[:CONNECTS]->(flight_search_departure_airport),
+  (flight_search_departure_airport)-[:CONNECTS]->(flight_search_departure_airport_code),
+  (flight_search_destination)-[:CONNECTS]->(flight_search_destination_city),
+  (flight_search_destination)-[:SKILL_GET_ARRIVAL_DATE]->(flight_search_arrival_date),
+  (flight_search_destination)-[:SKILL_GET_ARRIVAL_TIME]->(flight_search_arrival_time),
+  (flight_search_destination)-[:CONNECTS]->(flight_search_arrival_airport),
+  (flight_search_arrival_airport)-[:CONNECTS]->(flight_search_arrival_airport_code)
+
+// ---- Fall Back ----//
+CREATE (fallback:FALL_BACK {label:"Fall Back"})
+
+// ---- Flight Cancelled ----//
+CREATE (junction_flight_cancelled:JUNCTION {label:"Question", question:"Sorry, your flight got cancelled. Do you like to look for an alternate flight?"})
+CREATE (junction_flight_cancelled_same_values:JUNCTION {label:"Question", prompt:"Please confirm, if you still want to goto New york departing from Chicago today."})
+CREATE (prompt_flight_cancelled_to_flight_search:PROMPT {label:"Prompt", prompt:"Let me find you a few options."})
+CREATE (memory_update_flight_cancelled_to_flight_search:MEMORY {label:"Memory"})
+CREATE
+  (skill_flight_status)-[:STATE_FLIGHT_CANCELLED]->(junction_flight_cancelled),
+  (junction_flight_cancelled)-[:SKILL_YES]->(junction_flight_cancelled_same_values),
+  (junction_flight_cancelled)-[:SKILL_NO]->(fallback),
+  (junction_flight_cancelled_same_values)-[:SKILL_YES]->(prompt_flight_cancelled_to_flight_search),
+  (junction_flight_cancelled_same_values)-[:SKILL_NO]->(skill_flight_search),
+  (prompt_flight_cancelled_to_flight_search)-[:CONNECTS]->(memory_update_flight_cancelled_to_flight_search),
+  (memory_update_flight_cancelled_to_flight_search)-[:CONNECTS]->(skill_flight_search)
+
+// ---- Flight Delayed ----//
+CREATE
+  (skill_flight_status)-[:STATE_FLIGHT_DELAYED]->(skill_flight_delay_reason:FLIGHT_DELAY_REASON {label:"Flight Delay Reason"}),
+  (user)-[:SKILL_GET_FLIGHT_DELAY_REASON]->(skill_flight_delay_reason),
+  (skill_flight_delay_reason)-[:CONNECTS{can_have_many:true}]->(segment)
+
+
+// ---- Unused Ticket Refund ----//
+CREATE
+  (user)-[:SKILL_GET_TICKET_REFUND_POLICY]->(skill_unused_ticket_refund:UNUSED_TICKET_REFUND {label:"Unused Ticket Refund"}),
+  (skill_flight_search)-[:NEXT]->(skill_unused_ticket_refund)
+
+// ---- Capabilities ----//
+CREATE (skill_capabilities:CAPABILITIES {label:"Capabilities",  always_active:true})
+CREATE
+  (user)-[:SKILL_GET_CAPABILITIES]->(skill_capabilities),
+  (skill_capabilities)-[:CONNECTS]->(skill_flight_search),
+  (skill_capabilities)-[:CONNECTS]->(skill_flight_status),
+  (skill_capabilities)-[:CONNECTS]->(skill_unused_ticket_refund)
+
+// ---- Agent ----//
+CREATE (agent_request:AGENT_REQUEST {label:"Agent Handoff", always_active:true})
+CREATE (user)-[:SKILL_AGENT_HANDOFF]->(agent_request),
+CREATE (bot_request:BOT_REQUEST {label:"Bot Request"})
+CREATE (agent_request)-[:CONNECTS]->(bot_request)
+
+// ---- Main Menu ----//
+CREATE (main_menu:MENU {label:"Main Menu", always_active:true})
+CREATE
+    (user)-[:SKILL_SHOW_MENU]->(main_menu),
+    (main_menu)-[:CONNECTS]->(skill_flight_search),
+    (main_menu)-[:CONNECTS]->(skill_flight_status),
+    (main_menu)-[:CONNECTS]->(agent_request)
+
+// ---- Greetings ----//
+CREATE (skill_greetings:GREETINGS {label:"Greetings"})
+CREATE
+    (user)-[:SKILL_GREETINGS]->(skill_greetings),
+    (skill_greetings)-[:CONNECTS]->(skill_flight_search),
+    (skill_greetings)-[:CONNECTS]->(skill_flight_status),
+    (skill_greetings)-[:CONNECTS]->(agent_request)
+
+// ---- End conversation ----//
+CREATE (skill_end_conversation:END_CONVERSATION {label:"End Conversation"})
+CREATE
+    (user)-[:SKILL_END_CONVERSATION]->(skill_end_conversation),
+    (skill_end_conversation)-[:CONNECTS]->(skill_flight_search),
+    (skill_end_conversation)-[:CONNECTS]->(skill_flight_status),
+    (skill_end_conversation)-[:CONNECTS]->(agent_request)
+
+// ---- Skills - Application ----//
+// SKILL_GET_CAPABILITIES
+// SKILL_GREETINGS
+// SKILL_END_CONVERSATION
+// SKILL_SHOW_MENU
+// SKILL_AGENT_HANDOFF
+
+// ---- Skills - Conversation ----//
+// SKILL_YES
+// SKILL_NO
+
+// ---- Skills - Client ----//
+// SKILL_GET_FLIGHT_STATUS
+// SKILL_GET_FLIGHT_NUMBER
+// SKILL_GET_DEPARTURE_INFO
+// SKILL_GET_DEPARTURE_DATE
+// SKILL_GET_DEPARTURE_TIME
+// SKILL_GET_ARRIVAL_INFO
+// SKILL_GET_ARRIVAL_DATE
+// SKILL_GET_ARRIVAL_TIME
+// SKILL_GET_FLIGHT_SEARCH
+// SKILL_GET_PRICE
+
+// ---- State ----//
+// STATE_FLIGHT_DELAYED
+// STATE_FLIGHT_CANCELLED
+
+// ---- Other Edges ----//
+// CONNECTS
+// NEXT
+//

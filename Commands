@@ -1,0 +1,21 @@
+// OTHER
+https://www.quackit.com/neo4j/tutorial/neo4j_delete_a_node_using_cypher.cfm
+
+// DELETE RELATION SHIPS
+MATCH (:DEPARTURE_DATE)-[r:CONNECTS]-(:SEGMENT) DELETE r
+
+// DELETE NODE
+MATCH (a:Album {Name: "Killers"}) DELETE a
+
+// SHOW ALL
+match (n) return (n)
+
+// DELETE ALL NODES AND RELATIONSHIPS
+MATCH (n)
+DETACH DELETE n
+
+
+// INDEX
+https://neo4j.com/docs/developer-manual/current/cypher/schema/index/
+Adding: CREATE INDEX ON :Person(firstname)
+Dropping: DROP INDEX ON :Person(firstname, surname)

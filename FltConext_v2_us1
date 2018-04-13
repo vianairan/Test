@@ -1,0 +1,31 @@
+// ---- C1: START ----//
+CREATE (user:USER {label:"James", active:true, delete_mode: "never"})
+CREATE (agent_request:AGENT_REQUEST {label:"Agent Handoff", active:true, delete_mode: "never"})
+CREATE (skill_capabilities:CAPABILITIES {label:"Capabilities", active:true, delete_mode: "never"})
+CREATE (main_menu:MENU {label:"Main Menu", active:true, delete_mode: "never"})
+CREATE
+    (user)-[:SKILL_AGENT_HANDOFF]->(agent_request),
+    (user)-[:SKILL_GET_CAPABILITIES]->(skill_capabilities),
+    (user)-[:SKILL_SHOW_MENU]->(main_menu)
+
+
+// ----- C2: FROM USER PROFILE - LONG TERM MEMORY ----//
+CREATE (full_name:FULL_NAME {label:"James Harden"})
+CREATE (age:AGE {label:"28"})
+CREATE (home:HOME {label:"Home"})
+CREATE (work:WORK {label:"Work"})
+CREATE (home_address:ADDRESS {label:"111, Park Rd, Sandy, UT"})
+CREATE (work_address:ADDRESS {label:"345, School Rd, Murray, UT"})
+CREATE (home_city:CITY {label:"Sandy"})
+CREATE (work_city:CITY {label:"Murray"})
+CREATE
+  (user)-[:NAME_OF]->(full_name),
+  (user)-[:AGE_OF]->(age),
+  (user)-[:LIVES_IN]->(home),
+  (user)-[:WORKS_AT]->(work),
+  (home)-[:ADDRESS_OF]->(home_address),
+  (work)-[:ADDRESS_OF]->(work_address),
+  (home)-[:LOCATED_IN]->(home_city),
+  (work)-[:LOCATED_IN]->(work_city)
+
+

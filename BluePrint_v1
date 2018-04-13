@@ -1,0 +1,64 @@
+CREATE (:TRIP {label:"Trip"})
+
+CREATE (:FLIGHT_STATUS {label:"Flight Status"})
+CREATE (flight:SEGMENT {label:"Segment"})
+CREATE (flightNumber:FLIGHT_NUMBER {label:"Flight Number"})
+CREATE (origin:DEPARTURE {label:"Departure"})
+CREATE (origin:ARRIVAL {label:"Arrival"})
+CREATE (departure_date:DEPARTURE_DAE {label:"Depart Date"})
+CREATE (arrival_date:ARRIVAL_DATE {label:"Arrival Date"})
+CREATE (:DEPARTURE_AIRPORT {label:"Depart Airport"})
+CREATE (:ARRIVAL_AIRPORT {label:"Arrival Airport"})
+
+CREATE (flight_search:FLIGHT_SEARCH {label:"Flight Search"})
+CREATE (origin:ORIGIN {label:"Origin"})
+CREATE (destination:DESTINATION {label:"Destination"})
+
+// Create relation ships
+MATCH  (u:USER {label:'User'}), (n1:TRIP {label:'Trip'}), (n2:FLIGHT_STATUS {label:'Flight Status'}), (n3:FLIGHT_SEARCH {label:'Flight Search'})
+CREATE (u)-[:SKILL_GET_TRIP_INFO]->(n1)
+CREATE (u)-[:SKILL_GET_FLIGHT_STATUS]->(n2)
+CREATE (u)-[:SKILL_GET_FLIGHT_SEARCH]->(n3)
+
+MATCH (n1:FLIGHT_STATUS {label:'Flight Status'}), (n2:SEGMENT {label:'Segment'})
+CREATE (n1)-[:SKILL_GET_FLIGHT_NUMBER]->(n2)
+
+MATCH (n1:SEGMENT {label:'Segment'}), (n2:FLIGHT_NUMBER {label:'Flight Number'}), (n3:DEPARTURE {label:'Departure'}),  (n4:ARRIVAL {label:'Arrival'})
+CREATE (n1)-[:SKILL_GET_FLIGHT_NUMBER]->(n2)
+CREATE (n1)-[:CONNECTS]->(n3)
+CREATE (n1)-[:CONNECTS]->(n4)
+
+MATCH (n1:DEPARTURE), (n2:DEPARTURE_DATE), (n3:DEPARTURE_AIRPORT)
+CREATE (n1)-[:SKILL_GET_DEPARTURE_DATE]->(n2)
+CREATE (n1)-[:SKILL_GET_DEPARTURE_AIRPORT]->(n3)
+
+MATCH (n1:ARRIVAL), (n2:ARRIVAL_DATE), (n3:ARRIVAL_AIRPORT)
+CREATE (n1)-[:SKILL_GET_ARRIVAL_DATE]->(n2)
+CREATE (n1)-[:SKILL_GET_ARRIVAL_AIRPORT]->(n3)
+
+MATCH (n1:FLIGHT_SEARCH), (n2:ORIGIN), (n3:DESTINATION)
+CREATE (n1)-[:SKILL_GET_ORIGIN]->(n2)
+CREATE (n1)-[:SKILL_GET_DESTINATION]->(n3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

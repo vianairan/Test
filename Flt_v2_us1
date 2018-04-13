@@ -1,0 +1,48 @@
+UC1
+---
+
+BG - Blueprint graph
+CG - Context graph
+
+* Start state
+    - Action Node = []
+    - Active Nodes = [USER]
+
+** Start
+U0: 
+    - Q1 on BG: always_active = true
+    - C1 on CG: Create always active nodes in the context graph
+    - C2 on CG: Create related nodes from long term memory
+
+
+U1: Hi
+    - Prediction skills:: [SKILL_GREETINGS]
+    - Prediction concepts: []
+    - Node Recommendation: Query all the nodes and edges by skill id -> GREETINGS Node
+    - Node is already unlocked by default.
+    - Send the text/voice response [Hi, how can I help?]
+    - Next Evaluator: Determine QRs
+    - Memory Manager:
+        : Action Node = [GREETINGS]
+        : Active Nodes = [USER, GREETINGS]
+        : DELETE MODE -
+            . NEXT MESSAGE = [SKILL_GREETINGS]
+
+U2: What's the status of my flight?
+    - Prediction skills: [SKILL_GET_FLIGHT_STATUS]
+    - Prediction concepts: []
+    - Node Recommendation: [FLIGHT_STATUS]
+    - Nothing to be done from Dimension and Depth Resolvers as there is only one recommended node
+    - Path Finder
+        : Check for dependency nodes
+            FLIGHT_STATUS -> FLIGHT_SEGMENT
+            FLIGHT_SEGMENT -> FLIGHT_NUMBER | departure & arrival
+        : Path Resolver: choose FLIGHT_NUMBER
+    - Node Execution Service <-- FLIGHT_NUMBER
+        : Ask question [What's the flight number?]
+    - Next Evaluator: Determine QRs
+    - Memory Manager:
+          : Action Node = [FLIGHT_NUMBER]
+          : Active Nodes = [USER]
+
+

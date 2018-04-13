@@ -1,0 +1,15 @@
+Blue print node
+    - Can have one or more skill ids or no skill id
+    - Can be an ALWAYS ACTIVE node (Ex: User, Help etc)
+    - Should have DELETE MODE - it can be TTL, NEXT REQUEST, NEXT MESSAGE, NEVER (may be same as ALWAYS ACTIVE)
+
+Context node
+    - Should keep request id. So all the subsequent operations can be grouped together.
+      Ex: Flight search request has request id of 1234. All the subsequent questions / nodes will belong to the same request id.
+    - Should keep message id.
+    - Action node tag (may be we keep this inside the node as a property. Or it can be a separate list outside of the context graph)
+    - Active node tag
+
+
+
+

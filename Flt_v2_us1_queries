@@ -1,0 +1,14 @@
+
+
+UC1 - Queries
+--------------
+
+// U0: Q1
+MATCH (u:USER)-[r]-(y)
+WHERE y.always_active = true RETURN u, type(r), y
+
+
+
+// U1: Hi
+MATCH (a)-[:SKILL_GET_FLIGHT_STATUS]->(n)
+RETURN a, n
